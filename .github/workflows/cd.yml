@@ -25,7 +25,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
         with:
-          fetch_depth: 0 # Required due to the way Git works, without it WyriHaximus/github-action-get-previous-tag@v1 won't be able to find any or the correct tags
+          fetch-depth: 0 # Required due to the way Git works, without it WyriHaximus/github-action-get-previous-tag@v1 won't be able to find any or the correct tags
 
       - name: Redirect output of hello.py to artifact.txt
         run: python3 hello.py > hello.py.output.txt
