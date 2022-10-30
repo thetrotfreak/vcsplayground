@@ -30,6 +30,9 @@ jobs:
 
       - name: Zip
         run: zip HelloWorld hello.py hello.py.output.txt
+      
+      - name: Check latest tag
+        run: echo '${{ github.ref_name }}'
         
       - name: Release
         uses: softprops/action-gh-release@v0.1.14
