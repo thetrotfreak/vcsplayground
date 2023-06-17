@@ -14,7 +14,7 @@ sudo apt-get install python3.10-venv -y
 # source .zshrc
 export PATH=$HOME/.local/bin:$PATH
 
-dash -c "$(curl -fsSLO https://raw.githubusercontent.com/thetrotfreak/.files/main/.tmux.conf)"
+dash -c "$(curl -fsSLo ~/.tmux.conf https://raw.githubusercontent.com/thetrotfreak/.files/main/.tmux.conf)"
 
 dash -c "$(curl --create-dirs -fsSLo ~/.vim/pack/python/start/black/plugin/black.vim https://raw.githubusercontent.com/psf/black/stable/plugin/black.vim)"
 dash -c "$(curl --create-dirs -fsSLo ~/.vim/pack/python/start/black/autoload/black.vim https://raw.githubusercontent.com/psf/black/stable/autoload/black.vim)"
