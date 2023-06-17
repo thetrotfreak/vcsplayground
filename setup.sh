@@ -23,5 +23,4 @@ dash -c "$(curl --create-dirs -fsSLo ~/.vim/colors/catppuccin_macchiato.vim http
 dash -c "$(curl --create-dirs -fsSLo ~/.vim/colors/catppuccin_frappe.vim https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_latte.vimhttps://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_frappe.vim)"
 dash -c "$(curl --create-dirs -fsSLo ~/.vim/vimrc https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/vimrc)"
 
-# https://stackoverflow.com/a/12838963
-vim -c Black -c qall
+vim --not-a-term -c Black -c qall
