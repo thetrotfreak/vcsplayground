@@ -4,13 +4,13 @@ sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install build-essential gdb
 
 # https://askubuntu.com/a/30157
-sudo apt-get install zsh
+sudo apt-get install zsh -y
 chsh -s "$(which zsh)"
 dash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 dash -c "curl -fsSLO https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py"
 rm get-pip.py
-echo "export PATH=\$HOME/.local/bin:\$PATH" >> ~/.zshrc
+echo "export PATH=$HOME/.local/bin:\$PATH" >> ~/.zshrc
 export PATH=$HOME/.local/bin:$PATH
 sudo apt-get install python3.10-venv -y
 
