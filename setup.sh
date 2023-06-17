@@ -18,9 +18,10 @@ dash -c "$(curl -fsSLO https://raw.githubusercontent.com/thetrotfreak/.files/mai
 dash -c "$(curl --create-dirs -fsSLo ~/.vim/pack/python/start/black/plugin/black.vim https://raw.githubusercontent.com/psf/black/stable/plugin/black.vim)"
 dash -c "$(curl --create-dirs -fsSLo ~/.vim/pack/python/start/black/autoload/black.vim https://raw.githubusercontent.com/psf/black/stable/autoload/black.vim)"
 dash -c "$(curl --create-dirs -fsSLo ~/.vim/colors/gruvbox.vim https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/gruvbox.vim)"
-dash -c "$(curl --create-dirs -fsSLo ~/.vim/colors/catppuccin_mocha.vim https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_mocha.vim
-dash -c "$(curl --create-dirs -fsSLo ~/.vim/colors/catppuccin_macchiato.vim https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_macchiato.vim
-dash -c "$(curl --create-dirs -fsSLo ~/.vim/colors/catppuccin_frappe.vim https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_latte.vimhttps://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_frappe.vim
+dash -c "$(curl --create-dirs -fsSLo ~/.vim/colors/catppuccin_mocha.vim https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_mocha.vim)"
+dash -c "$(curl --create-dirs -fsSLo ~/.vim/colors/catppuccin_macchiato.vim https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_macchiato.vim)"
+dash -c "$(curl --create-dirs -fsSLo ~/.vim/colors/catppuccin_frappe.vim https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_latte.vimhttps://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/colors/catppuccin_frappe.vim)"
 dash -c "$(curl --create-dirs -fsSLo ~/.vim/vimrc https://raw.githubusercontent.com/thetrotfreak/.files/main/.vim/vimrc)"
+
 # https://stackoverflow.com/a/12838963
-# vim -c Black -c qall
+vim -c Black -c qall
