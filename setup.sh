@@ -5,7 +5,7 @@ sudo apt-get install build-essential gdb python3.10-venv zsh -y
 
 # Read(for root detection): https://askubuntu.com/a/30157
 # Read(for chsh): https://askubuntu.com/a/1325754
-sudo chsh -s $(which dash) $(whoami)
+sudo chsh -s $(which zsh) $(whoami)
 dash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 dash -c "curl -fsSLO https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py && rm get-pip.py"
