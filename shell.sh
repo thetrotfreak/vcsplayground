@@ -1,0 +1,1 @@
+usermod --shell "$(which zsh)"
