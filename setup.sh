@@ -1,4 +1,8 @@
 #!/bin/sh
+
+# Suppress WSL2 Ubuntu Banner
+touch .hushlogin
+
 sudo apt-get update && sudo apt-get upgrade -y
 
 sudo apt-get install build-essential gdb python3.10-venv zsh -y
