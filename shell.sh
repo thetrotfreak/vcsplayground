@@ -1,3 +1,3 @@
 #!/bin/dash
-# usermod --shell "$(which zsh)"
-chsh --shell "$(which zsh)"
+usermod --shell "$(which zsh)" $USER
+# chsh --shell "$(which zsh)"
