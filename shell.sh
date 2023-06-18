@@ -1,3 +1,3 @@
 #!/bin/dash
-# usermod --shell "$(which zsh)" $USER
-dash -lc "chsh --shell \"$(which zsh)\""
+# https://askubuntu.com/a/1325754
+sudo chsh --shell $(which zsh) $(whoami)
