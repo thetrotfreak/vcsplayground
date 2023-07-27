@@ -1,5 +1,6 @@
 ## Source Code
-```c
+
+``` c
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -32,72 +33,73 @@ int main() {
   return 0;
 }
 ```
+
 ## Token Table
-Identifiers|
----|
-factorial|
-n|
-bool|
-isspecial|
-sum|
-digit|
-copy_of_n|
-true|
-false|
-main|
-printf|
-i|
 
-Keywords|
----|
-unsigned|
-long|
-const|
-int|
-if|
-return|
-else|
-while|
-for|
+| Identifiers |
+|-------------|
+| factorial   |
+| n           |
+| bool        |
+| isspecial   |
+| sum         |
+| digit       |
+| copy_of_n   |
+| true        |
+| false       |
+| main        |
+| printf      |
+| i           |
 
-Constants|
----|
-0|
-1|
-10|
-100|
-1000|
+| Keywords |
+|----------|
+| unsigned |
+| long     |
+| const    |
+| int      |
+| if       |
+| return   |
+| else     |
+| while    |
+| for      |
 
-String Literals|
----|
-"Listing special numbers between 100 and 1000...\n"|
-"%d\n"|
+| Constants |
+|-----------|
+| 0         |
+| 1         |
+| 10        |
+| 100       |
+| 1000      |
 
-Operators|
----|
-<|
->|
-==|
-\|\||
-*|
--|
-=|
-!=|
-%|
-/|
-+=|
-?|
-<=|
-++|
+| String Literals                                 |
+|-------------------------------------------------|
+| “Listing special numbers between 100 and 1000…” |
+| “%d”                                            |
 
-Special Symbols|
----|
-\#|
-(|
-)|
-{|
-}|
-;|
-:|
-,|
+| Operators                                       |
+|-------------------------------------------------|
+| \<                                              |
+| \>                                              |
+| ==                                              |
+| \|\|                                            |
+| \*                                              |
+| \-                                              |
+| =                                               |
+| !=                                              |
+| %                                               |
+| /                                               |
+| +=                                              |
+| ?                                               |
+| \<=                                             |
+| ++                                              |
 
+| Special Symbols |
+|-----------------|
+| \#              |
+| (               |
+| )               |
+| {               |
+| }               |
+| ;               |
+| :               |
+| ,               |
