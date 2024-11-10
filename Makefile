@@ -19,3 +19,6 @@ server : server/main.py
 clean :
 	- rm -rf $(BUILD_DIR)
 	- rm -rf **/__pycache__
+
+run: $(ARTIFACT)
+	./$(ARTIFACT)
