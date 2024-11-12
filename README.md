@@ -12,6 +12,11 @@
 </details>
 
 <details>
+    <summary>jansson</summary>
+    <p>https://jansson.readthedocs.io/en/stable/apiref.html</p>
+</details>
+
+<details>
     <summary>c</summary>
     <p>https://man7.org/linux/man-pages/man3/atexit.3.html</p>
 </details>
