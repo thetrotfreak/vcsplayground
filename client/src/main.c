@@ -1,15 +1,19 @@
 #include <stdlib.h>
 
 #include "curl/curl.h"
+#include "jansson.h"
 #include "ncurses.h"
+
+void post(CURL *curl, WINDOW *win);
 
 size_t write_callback(char *buffer, size_t size, size_t nmemb, void *userdata) {
   /*
    * TODO
-   * Write the chunks into a malloc area
+   * Write the chunks into a malloc area.
    * Resize the area here since write_callback will be invoked n times by curl
-   * unless done This will involve realloc and memcpy operations Finally, once
-   * done, display it into the stdscr via ncurses
+   * unless done.
+   * This will involve realloc and memcpy operations.
+   * Finally, once done, display it into the stdscr via ncurses.
    */
   WINDOW *win = (WINDOW *)userdata;
 
@@ -18,7 +22,7 @@ size_t write_callback(char *buffer, size_t size, size_t nmemb, void *userdata) {
   }
 
   /* do some simple stuff with ncurses */
-  wprintw(win, "%s", buffer);
+  wprintw(win, "HTTP Response: %s\n", buffer);
 
   /* draw buffer onto stdscr */
   wrefresh(win);
@@ -41,6 +45,7 @@ int main() {
   /* rare for initscr() to fail, but it's better to be safe than sorry */
   WINDOW *win = initscr();
   if (win == NULL) {
+    free(win);
     exit(EXIT_SUCCESS);
   }
 
@@ -76,25 +81,92 @@ int main() {
    * We will use the curl_easy_x family which are synchronous operations.
    */
   CURL *curl = curl_easy_init();
+  CURLcode res;
   if (curl) {
-    CURLcode res =
-        curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:8000/");
+    res = curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:8000/");
     res = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)win);
     res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     res = curl_easy_perform(curl);
 
-    // HTTP status code >= 4XX will be treated as error
-    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
-
     long status_code;
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+    res = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
 
-    mvprintw(1, 0, "res %d", res);
-    mvprintw(2, 0, "status_code %ld", status_code);
+    printw("HTTP Get: %ld\n", status_code);
   }
+
+  // perform a HTTP Post
+  post(curl, win);
 
   // wait for user input before exiting
   getch();
 
   exit(EXIT_SUCCESS);
+}
+
+void post(CURL *curl, WINDOW *win) {
+  if (win == NULL || curl == NULL) {
+    return;
+  }
+
+  CURLcode res;
+  struct curl_slist *slist = NULL;
+  // struct curl_slist *temp = NULL;
+
+  /*
+   * Passing NULL as the first argument creates a new curl_slist.
+   * We want to perform a HTTP POST with a JSON request body.
+   */
+  slist = curl_slist_append(slist, "Content-Type: application/json");
+
+  if (slist == NULL) {
+    // a NULL pointer returned by curl_slist_append() implies failure
+    curl_slist_free_all(slist);
+    return;
+  }
+
+  /*
+   * We assign it to temp first to avoid
+   * overwriting an exisiting non-empty list on failure.
+   */
+  // slist = temp;
+  json_t *post_data = json_object();
+  json_t *username = json_string("foo@example.com\0");
+  json_t *password = json_string("foo@123\0");
+
+  if (post_data == NULL || username == NULL || password == NULL) {
+    return;
+  }
+
+  if (json_object_set(post_data, "username\0", username) != 0 ||
+      json_object_set(post_data, "password\0", password) != 0) {
+    return;
+  }
+
+  char *json_data = json_dumps((const json_t *)post_data, 0);
+
+  if (json_data == NULL) {
+    return;
+  }
+
+  curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist);
+  curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:8000/post");
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json_data);
+
+  res = curl_easy_perform(curl);
+  long status_code;
+  curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+
+  if (res == CURLE_OK) {
+    wprintw(win, "HTTP Post: %ld\n", status_code);
+    wrefresh(win);
+  }
+
+  /*
+   * Clean up the HTTP Header list,
+   * the options set on the CURL* handle, and
+   * the heap data used by json_dumps()
+   */
+  free(json_data);
+  curl_slist_free_all(slist);
+  curl_easy_cleanup(curl);
 }

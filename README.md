@@ -22,5 +22,5 @@
 These were executed on Ubuntu `24.04.1` LTS:
 
 ```shell
-$ pkg-config --libs ncurses libcurl
+$ pkg-config --libs ncurses libcurl jansson
 ```

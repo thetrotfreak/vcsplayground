@@ -5,7 +5,7 @@ ARTIFACT = $(BUILD_DIR)$(BUILD_NAME)
 
 client : client/src/main.c
 	mkdir -p $(BUILD_DIR)
-	$(CC) client/src/main.c -o $(ARTIFACT) -lncurses -lcurl
+	$(CC) client/src/main.c -o $(ARTIFACT) -lncurses -lcurl -ljansson
 
 fmt :
 	clang-format -i --style=llvm client/src/main.c
