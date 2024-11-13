@@ -29,3 +29,13 @@ These were executed on Ubuntu `24.04.1` LTS:
 ```shell
 $ pkg-config --libs ncurses libcurl jansson
 ```
+
+# Requirements
+
+To build from source:
+
+- libncurses.so.6
+- libtinfo.so.6
+- libcurl.so.4
+- libjansson.so.4
+- libc.so.6
