@@ -1,10 +1,12 @@
 #include <stdlib.h>
+#include <time.h>
 
 #include "curl/curl.h"
 #include "jansson.h"
 #include "ncurses.h"
 
 void post(CURL *curl, WINDOW *win);
+void sophos(CURL *curl, WINDOW *win);
 
 size_t write_callback(char *buffer, size_t size, size_t nmemb, void *userdata) {
   /*
@@ -41,7 +43,7 @@ void this_endwin(void) {
 
 void this_curl_global_cleanup(void) { curl_global_cleanup(); }
 
-int main() {
+int main(int argc, char *argv) {
   /* rare for initscr() to fail, but it's better to be safe than sorry */
   WINDOW *win = initscr();
   if (win == NULL) {
@@ -92,10 +94,11 @@ int main() {
     res = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
 
     printw("HTTP Get: %ld\n", status_code);
-  }
 
-  // perform a HTTP Post
-  post(curl, win);
+    // perform a HTTP Post
+    post(curl, win);
+    sophos(curl, win);
+  }
 
   // wait for user input before exiting
   getch();
@@ -168,5 +171,42 @@ void post(CURL *curl, WINDOW *win) {
    */
   free(json_data);
   curl_slist_free_all(slist);
+  curl_easy_cleanup(curl);
+}
+
+void sophos(CURL *curl, WINDOW *win) {
+  if (win == NULL || curl == NULL) {
+    return;
+  }
+
+  CURLcode res;
+
+  struct timespec epoch = {.tv_sec = 0, .tv_nsec = 0};
+  if (clock_gettime(CLOCK_REALTIME, &epoch) != 0) {
+    return;
+  }
+
+  // This Form data needs a query parameter 'a' whose value is
+  // UNIX Epoch in milliseconds
+  long long a = (epoch.tv_sec * 1000) + (epoch.tv_nsec / 1000000);
+  char form_data[1024];
+  snprintf(form_data, 1023,
+           "username=2347111&password=15438582&producttype=0&mode=191&a=%lld",
+           a);
+  char *form = "username=2347111&password=15438582&producttype=0&mode=193&a=";
+  curl_easy_setopt(curl, CURLOPT_URL,
+                   "http://192.168.100.100:8090/httpclient.html");
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, form);
+
+  res = curl_easy_perform(curl);
+  long status_code;
+  curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+
+  wprintw(win, "HTTP Form Data: %s\n", form_data);
+  if (res == CURLE_OK) {
+    wprintw(win, "HTTP Post: %ld\n", status_code);
+    wrefresh(win);
+  }
+
   curl_easy_cleanup(curl);
 }

@@ -1,0 +1,136 @@
+diff --git a/client/src/main.c b/client/src/main.c
+index d1ed3c5..541159c 100644
+--- a/client/src/main.c
++++ b/client/src/main.c
+@@ -1,10 +1,12 @@
+ #include <stdlib.h>
++#include <time.h>
+ 
+ #include "curl/curl.h"
+ #include "jansson.h"
+ #include "ncurses.h"
+ 
+ void post(CURL *curl, WINDOW *win);
++void sophos(CURL *curl, WINDOW *win);
+ 
+ size_t write_callback(char *buffer, size_t size, size_t nmemb, void *userdata) {
+   /*
+@@ -83,20 +85,14 @@ int main() {
+   CURL *curl = curl_easy_init();
+   CURLcode res;
+   if (curl) {
+-    res = curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:8000/");
+     res = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)win);
+     res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+-    res = curl_easy_perform(curl);
+ 
+-    long status_code;
+-    res = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+-
+-    printw("HTTP Get: %ld\n", status_code);
++    // perform a HTTP Post
++    // post(curl, win);
++    sophos(curl, win);
+   }
+ 
+-  // perform a HTTP Post
+-  post(curl, win);
+-
+   // wait for user input before exiting
+   getch();
+ 
+@@ -129,16 +125,35 @@ void post(CURL *curl, WINDOW *win) {
+    * overwriting an exisiting non-empty list on failure.
+    */
+   // slist = temp;
++  struct timespec epoch = {.tv_sec = 0};
+   json_t *post_data = json_object();
+-  json_t *username = json_string("foo@example.com\0");
+-  json_t *password = json_string("foo@123\0");
++  json_t *username = json_string("<USERNAME>\0");
++  json_t *password = json_string("<PASSWORD>\0");
++  json_t *producttype = json_string("0\0");
++  // &mode=191 is for a Login request
++  // &mode=193 is for a Logout request
++  json_t *mode = json_integer(193);
++  json_t *a;
++
++  if (clock_gettime(CLOCK_REALTIME, &epoch) != 0) {
++    return;
++  } else {
++    // timsepc.tv_sec stores epoch in seconds
++    // we need it in milliseconds
++    json_int_t a_millis = (epoch.tv_sec * 1000) + (epoch.tv_nsec / 1000000);
++    a = json_integer(a_millis);
++  }
+ 
+-  if (post_data == NULL || username == NULL || password == NULL) {
++  if (post_data == NULL || username == NULL || password == NULL || a == NULL ||
++      producttype == NULL) {
+     return;
+   }
+ 
+   if (json_object_set(post_data, "username\0", username) != 0 ||
+-      json_object_set(post_data, "password\0", password) != 0) {
++      json_object_set(post_data, "password\0", password) != 0 ||
++      json_object_set(post_data, "producttype\0", producttype) != 0 ||
++      json_object_set(post_data, "a\0", a) != 0 ||
++      json_object_set(post_data, "mode\0", mode) != 0) {
+     return;
+   }
+ 
+@@ -146,10 +161,13 @@ void post(CURL *curl, WINDOW *win) {
+ 
+   if (json_data == NULL) {
+     return;
++  } else {
++    wprintw(win, "HTTP Post Body: %s\n", json_data);
+   }
+ 
+   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist);
+-  curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:8000/post");
++  curl_easy_setopt(curl, CURLOPT_URL,
++                   "http://192.168.100.100:8090/httpclient.html");
+   curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json_data);
+ 
+   res = curl_easy_perform(curl);
+@@ -170,3 +188,39 @@ void post(CURL *curl, WINDOW *win) {
+   curl_slist_free_all(slist);
+   curl_easy_cleanup(curl);
+ }
++
++void sophos(CURL *curl, WINDOW *win) {
++  if (win == NULL || curl == NULL) {
++    return;
++  }
++  CURLcode res;
++  struct timespec epoch = {.tv_sec = 0, .tv_nsec = 0};
++  if (clock_gettime(CLOCK_REALTIME, &epoch) != 0) {
++    return;
++  }
++  // This Form data needs a query parameter 'a' whose value is
++  // UNIX Epoch in milliseconds
++  long long a = (epoch.tv_sec * 1000) + (epoch.tv_nsec / 1000000);
++  char form_data[1024];
++  snprintf(form_data, 1023,
++           "username=<USERNAME>&password=<PASSWORD>&producttype=0&mode=191&a=%lld",
++           a);
++  wprintw(win, "HTTP Form Data: %s\n", form_data);
++  char *form ="username=<USERNAME>&password=<PASSWORD>&producttype=0&mode=193&a=1732777450000";
++  curl_easy_setopt(curl, CURLOPT_URL,
++                   "http://192.168.100.100:8090/httpclient.html");
++  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, form);
++
++  res = curl_easy_perform(curl);
++  long status_code;
++  curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
++
++  if (res == CURLE_OK) {
++    wprintw(win, "HTTP Post: %ld\n", status_code);
++    wrefresh(win);
++  }else{
++    wprintw(win, "HTTP Post: %ld\n", status_code);
++    wrefresh(win);
++  }
++  curl_easy_cleanup(curl);
++}
