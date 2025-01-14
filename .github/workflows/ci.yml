@@ -1,0 +1,29 @@
+name: PyTest
+
+on:
+  push:
+    branches:
+      - 'lang/python'
+  pull_request:
+    branches:
+      - 'lang/python'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: $PYTHONPATH:$(pwd)
+    steps:
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v4
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          echo $PYTHONPATH
+          pytest --cov
