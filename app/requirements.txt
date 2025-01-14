@@ -1,3 +1,4 @@
 fastapi
 pytest
 pytest-cov
+httpx
